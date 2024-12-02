@@ -1,0 +1,4 @@
+*character_video_stats*.tsv
+.env
+raw_video_stats.tsv
+yt-extractor

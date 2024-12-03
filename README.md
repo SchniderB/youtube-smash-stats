@@ -1,5 +1,9 @@
 # Manual to extract Youtube statistics from a playlist
 
+## Aim of the project
+The aim of the project is to extract the view, like and comment counts of a set of Smash Ultimate tournament playlists 
+from Youtube via Youtube's API to compute statistics and graphs per character and per player.
+
 ## Set up Python virtual environment
 
 ### First set-up

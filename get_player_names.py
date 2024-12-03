@@ -1,9 +1,42 @@
+# -*- coding: utf-8 -*-
+"""
+Player name annotation script
+
+This script processes a TSV file containing YouTube video statistics, specifically updating
+the Player 1 and Player 2 columns. It handles inconsistencies such as double quotes in player
+names and video titles, applies player names already provided in the two player columns to
+the row that have these player names in their video titles. This script is intended to be
+used iteratively with manual name curation.
+
+Features:
+- Handles double quotes in video titles and player names.
+- Avoids duplicate player assignments between Player 1 and Player 2.
+- Extracts player names from Player 1 and Player 2 columns.
+- Updates Player 1 and Player 2 columns with the extracted player names whenever a string match
+is found in the video title
+
+Dependencies:
+- pandas
+
+Usage:
+- Specify the input/output TSV file.
+- Run the script to update player information in place.
+
+Author: Boris
+"""
+
 import pandas as pd
+
+# Define constant variables
+IO_FILE = "character_video_stats.tsv"
 
 def update_players_with_quotes_handling(filename):
     """
-    Update Player 1 and Player 2 columns in the TSV file while handling double quotes correctly
+    Update Player 1 and Player 2 columns in the TSV file while handling double quotes
     and avoiding duplicates between Player 1 and Player 2.
+
+    :param filename: The path to the input/output TSV file
+    :return: The updated TSV file is saved in place
     """
     # Load the TSV file into a DataFrame
     df = pd.read_csv(filename, sep="\t")
@@ -21,8 +54,14 @@ def update_players_with_quotes_handling(filename):
     # Clean and normalize player names
     existing_players = {player.strip() for player in existing_players if player}
 
-    # Define a function to extract player names from the video title
     def extract_players_from_title(title, players):
+        """
+        Extract player names from a video title based on known player names.
+
+        :param title: The video title.
+        :param players: A set of known player names
+        :return: A list of player names found in the video title.
+        """
         matches = [player for player in players if player in title]
         return matches
 
@@ -57,6 +96,7 @@ def update_players_with_quotes_handling(filename):
     # Save the updated DataFrame back to the file
     df.to_csv(filename, sep="\t", index=False, quoting=3)
 
-# Example usage
-update_players_with_quotes_handling("character_video_stats.tsv")
-# KEN, HERO, Delta
+
+if __name__ == "__main__":
+    update_players_with_quotes_handling(IO_FILE)
+    print(f"Processing complete! File saved as {IO_FILE}.")

@@ -1,43 +1,104 @@
+# -*- coding: utf-8 -*-
+"""
+YouTube Data Visualization Script
+
+This script reads statistical data from multiple TSV files and generates
+horizontal bar charts as PDF files. The charts present metrics such as
+total views, average views, likes per view, and comments per view for both
+players and characters.
+
+Features:
+- Generates modern, dark-themed horizontal bar charts.
+- Configurable input/output file paths and chart details.
+- Limits the number of bars per chart to 100.
+
+Inputs:
+- TSV files containing the statistical data (specified in `input_files`).
+
+Outputs:
+- PDF files containing the plots (specified in `output_pdf_files`).
+
+Usage:
+- Adjust the `input_files`, `output_pdf_files`, and `chart_configs` as needed.
+- Run the script to generate charts.
+
+Dependencies:
+- pandas
+- matplotlib
+
+Author: Boris
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
 # File paths for input TSV files
-input_files = [
-    "output_statistics/total_views_per_player.tsv",
-    "output_statistics/average_views_per_player.tsv",
-    "output_statistics/likes_per_view_per_player.tsv",
-    "output_statistics/comments_per_view_per_player.tsv",
-    "output_statistics/total_views_per_character.tsv",
-    "output_statistics/average_views_per_character.tsv",
-    "output_statistics/likes_per_view_per_character.tsv",
-    "output_statistics/comments_per_view_per_character.tsv",
-    "output_statistics/likes_per_view_per_player.tsv",
-    "output_statistics/likes_per_view_per_character.tsv",
-    "output_statistics/comments_per_view_per_player.tsv",
-    "output_statistics/comments_per_view_per_character.tsv"
+INPUT_FOLDER = "output_statistics"
+INPUT_FILES = [
+    f"{INPUT_FOLDER}/total_views_per_player.tsv",
+    f"{INPUT_FOLDER}/average_views_per_player.tsv",
+    f"{INPUT_FOLDER}/likes_per_view_per_player.tsv",
+    f"{INPUT_FOLDER}/comments_per_view_per_player.tsv",
+    f"{INPUT_FOLDER}/total_views_per_character.tsv",
+    f"{INPUT_FOLDER}/average_views_per_character.tsv",
+    f"{INPUT_FOLDER}/likes_per_view_per_character.tsv",
+    f"{INPUT_FOLDER}/comments_per_view_per_character.tsv",
+    f"{INPUT_FOLDER}/likes_per_view_per_player.tsv",
+    f"{INPUT_FOLDER}/likes_per_view_per_character.tsv",
+    f"{INPUT_FOLDER}/comments_per_view_per_player.tsv",
+    f"{INPUT_FOLDER}/comments_per_view_per_character.tsv"
 ]
 
 # Output directory for PDFs
-output_pdf_files = [
-    "output_graphs/total_views_per_player.pdf",
-    "output_graphs/average_views_per_player.pdf",
-    "output_graphs/likes_per_view_per_player.pdf",
-    "output_graphs/comments_per_view_per_player.pdf",
-    "output_graphs/total_views_per_character.pdf",
-    "output_graphs/average_views_per_character.pdf",
-    "output_graphs/likes_per_view_per_character.pdf",
-    "output_graphs/comments_per_view_per_character.pdf",
-    "output_graphs/total_likes_per_player.pdf",
-    "output_graphs/total_likes_per_character.pdf",
-    "output_graphs/total_comments_per_player.pdf",
-    "output_graphs/total_comments_per_character.pdf"
+OUTPUT_FOLDER = "output_graphs"
+OUTPUT_PDF_FILES = [
+    f"{OUTPUT_FOLDER}/total_views_per_player.pdf",
+    f"{OUTPUT_FOLDER}/average_views_per_player.pdf",
+    f"{OUTPUT_FOLDER}/likes_per_view_per_player.pdf",
+    f"{OUTPUT_FOLDER}/comments_per_view_per_player.pdf",
+    f"{OUTPUT_FOLDER}/total_views_per_character.pdf",
+    f"{OUTPUT_FOLDER}/average_views_per_character.pdf",
+    f"{OUTPUT_FOLDER}/likes_per_view_per_character.pdf",
+    f"{OUTPUT_FOLDER}/comments_per_view_per_character.pdf",
+    f"{OUTPUT_FOLDER}/total_likes_per_player.pdf",
+    f"{OUTPUT_FOLDER}/total_likes_per_character.pdf",
+    f"{OUTPUT_FOLDER}/total_comments_per_player.pdf",
+    f"{OUTPUT_FOLDER}/total_comments_per_character.pdf"
 ]
 
-# Function to create a horizontal bar chart
+# Define configurations for each chart
+CHART_CONFIGS = [
+    {"main_metric_col": "Total Views", "label_col": "Player", "title": "Total Views Per Player"},
+    {"main_metric_col": "Average Views", "label_col": "Player", "title": "Average Views Per Player"},
+    {"main_metric_col": "Likes Per View", "label_col": "Player", "title": "Likes Per View Per Player"},
+    {"main_metric_col": "Comments Per View", "label_col": "Player", "title": "Comments Per View Per Player"},
+    {"main_metric_col": "Total Views", "label_col": "Character", "title": "Total Views Per Character"},
+    {"main_metric_col": "Average Views", "label_col": "Character", "title": "Average Views Per Character"},
+    {"main_metric_col": "Likes Per View", "label_col": "Character", "title": "Likes Per View Per Character"},
+    {"main_metric_col": "Comments Per View", "label_col": "Character", "title": "Comments Per View Per Character"},
+    {"main_metric_col": "Total Likes", "label_col": "Player", "title": "Total Likes Per Player"},
+    {"main_metric_col": "Total Likes", "label_col": "Character", "title": "Total Likes Per Character"},
+    {"main_metric_col": "Total Comments", "label_col": "Player", "title": "Total Comments Per Player"},
+    {"main_metric_col": "Total Comments", "label_col": "Character", "title": "Total Comments Per Character"}
+]
+
 def create_horizontal_bar_chart(input_file, output_pdf, main_metric_col, label_col, title):
     """
-    Creates a horizontal bar chart with modern styling.
+    Generates a horizontal bar chart from a TSV file and saves it as a PDF.
+
+    This function reads data from a TSV file, sorts it by a specified metric,
+    and creates a horizontal bar chart. The chart includes customization for
+    modern aesthetics, including a dark background, teal-colored bars, and
+    minimalistic dashed grid lines. It is designed to handle up to 100 data points.
+
+    :param input_file: Path to the TSV file containing the data. The file must have
+                        tab-separated columns matching `main_metric_col` and `label_col`.
+    :param output_pdf: Path to the output PDF file where the chart will be saved.
+    :param main_metric_col: The column name used for the X-axis values (e.g., "Total Views").
+    :param label_col: The column name used for labeling the bars (e.g., "Player").
+    :param title: The title of the chart, displayed at the top.
+    :return: The function saves the chart to a PDF file and does not return anything.
     """
     # Load data
     data = pd.read_csv(input_file, sep="\t")
@@ -126,30 +187,18 @@ def create_horizontal_bar_chart(input_file, output_pdf, main_metric_col, label_c
 
     plt.close(fig)
 
-# Define configurations for each chart
-chart_configs = [
-    {"main_metric_col": "Total Views", "label_col": "Player", "title": "Total Views Per Player"},
-    {"main_metric_col": "Average Views", "label_col": "Player", "title": "Average Views Per Player"},
-    {"main_metric_col": "Likes Per View", "label_col": "Player", "title": "Likes Per View Per Player"},
-    {"main_metric_col": "Comments Per View", "label_col": "Player", "title": "Comments Per View Per Player"},
-    {"main_metric_col": "Total Views", "label_col": "Character", "title": "Total Views Per Character"},
-    {"main_metric_col": "Average Views", "label_col": "Character", "title": "Average Views Per Character"},
-    {"main_metric_col": "Likes Per View", "label_col": "Character", "title": "Likes Per View Per Character"},
-    {"main_metric_col": "Comments Per View", "label_col": "Character", "title": "Comments Per View Per Character"},
-    {"main_metric_col": "Total Likes", "label_col": "Player", "title": "Total Likes Per Player"},
-    {"main_metric_col": "Total Likes", "label_col": "Character", "title": "Total Likes Per Character"},
-    {"main_metric_col": "Total Comments", "label_col": "Player", "title": "Total Comments Per Player"},
-    {"main_metric_col": "Total Comments", "label_col": "Character", "title": "Total Comments Per Character"}
-]
 
-# Generate charts for each input file
-for input_file, output_pdf, config in zip(input_files, output_pdf_files, chart_configs):
-    create_horizontal_bar_chart(
-        input_file=input_file,
-        output_pdf=output_pdf,
-        main_metric_col=config["main_metric_col"],
-        label_col=config["label_col"],
-        title=config["title"]
-    )
+if __name__ == "__main__":
+    print("Bar charts generation started.")
 
-print("Bar charts generated and saved as PDFs.")
+    # Generate charts for each input file
+    for input_file, output_pdf, config in zip(INPUT_FILES, OUTPUT_PDF_FILES, CHART_CONFIGS):
+        create_horizontal_bar_chart(
+            input_file=input_file,
+            output_pdf=output_pdf,
+            main_metric_col=config["main_metric_col"],
+            label_col=config["label_col"],
+            title=config["title"]
+        )
+
+    print("Bar charts generated and saved as PDFs.")

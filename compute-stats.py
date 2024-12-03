@@ -30,7 +30,7 @@ from collections import defaultdict
 from typing import Dict, Tuple
 
 # File paths
-input_file = "character_video_stats5.tsv"
+input_file = "character_video_stats.tsv"
 file_paths = {
     "player": {
         "total_views": "output_statistics/total_views_per_player.tsv",

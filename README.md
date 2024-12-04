@@ -101,3 +101,8 @@ python3 compute_graphs.py
 ```
 The script `compute_graphs.py` will use the statistics previously generated in the folder `output_statistics` to build 
 graphs. The output files containing the different graphs are stored in the folder `output_graphs`
+
+As shown right below, the graphs are purposely long vertically so that they can be displayed with a constant scroll rate 
+in a presentation video.
+
+![Average views per character](output_graphs/average_views_per_character.pdf)

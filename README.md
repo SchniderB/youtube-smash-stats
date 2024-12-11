@@ -1,7 +1,7 @@
 # Manual to extract Youtube statistics from a playlist
 
 ## Aim of the project
-The aim of the project is to extract the view, like and comment counts of a set of Smash Ultimate tournament playlists 
+The aim of the project is to extract the view, like and comment counts of a set of Smash Ultimate tournament playlists
 from Youtube via Youtube's API to compute statistics and graphs per character and per player.
 
 ## Set up Python virtual environment
@@ -38,7 +38,7 @@ source yt-extractor/bin/activate
 ## Perform the statistic extraction
 
 ### Extract the playlist IDs and titles of the tournaments of interest
-A large number of playlist IDs and titles of the tournaments of interest were stored in the JSON file `input_jsons/playlists.json` 
+A large number of playlist IDs and titles of the tournaments of interest were stored in the JSON file `input_jsons/playlists.json`
 in the following format:
 ```json
 {
@@ -80,11 +80,11 @@ First annotate a few player names manually and propagate it to all their other g
 ```bash
 python3 get_player_names.py
 ```
-Repeat the process until you have annotated as many player names as possible. Make sure to start with the larger player 
+Repeat the process until you have annotated as many player names as possible. Make sure to start with the larger player
 names first and the shorter player names at last (as you may get unwanted substring matches with short names).
 
 #### Carefully review the player annotation
-Many corrections were necessary due to the inconsistent player name annotation within the video titles and substring 
+Many corrections were necessary due to the inconsistent player name annotation within the video titles and substring
 matching issues.
 
 
@@ -99,10 +99,15 @@ The output files containing the different statistics of interest are stored in t
 ```bash
 python3 compute_graphs.py
 ```
-The script `compute_graphs.py` will use the statistics previously generated in the folder `output_statistics` to build 
+The script `compute_graphs.py` will use the statistics previously generated in the folder `output_statistics` to build
 graphs. The output files containing the different graphs are stored in the folder `output_graphs`
 
-As shown right below, the graphs are purposely long vertically so that they can be displayed with a constant scroll rate 
+As shown right below, the graphs are purposely long vertically so that they can be displayed with a constant scroll rate
 in a presentation video.
 
 ![Average views per character](output_graphs/average_views_per_character.pdf)
+
+## Project Timeline
+- Start Date: November 27, 2024
+- Completion Date: November 29, 2024
+- Maintenance status: Inactive
